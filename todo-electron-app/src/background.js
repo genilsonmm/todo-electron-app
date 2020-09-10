@@ -23,6 +23,7 @@ function createWindow() {
     titleBarStyle:'hiddenInset',
     x: 0,
     y: 0,
+    //icon: path.join(__static, "icons/logo.png"),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info

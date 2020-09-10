@@ -1,5 +1,5 @@
 {
-  "name": "todo-electron-app",
+  "name": "today-TODO-list",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,8 +12,10 @@
   },
   "main": "background.js",
   "dependencies": {
+    "bootstrap": "^4.5.2",
+    "bootstrap-vue": "^2.16.0",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11",
+    "vue": "^2.6.12",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
