@@ -13,9 +13,23 @@
       <div v-for="n in activities" :key="n.name">
         <label class="activity-item">
           {{ n.name }}
-          <input type="radio" v-on:change="remove(n.name)" name="radio" />
+          <input type="radio" v-on:change="openDialog(n.name)" name="radio" />
           <span class="checkmark"></span>
         </label>
+      </div>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal_item" :style="computedModalStyle">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close" @click="closeModal">&times;</span>
+        <p>
+          Remover a atividade
+          <span>
+            <b>{{ currentAct }}?</b>
+          </span>
+        </p>
+        <button @click="canRemove" class="btn btn-danger float-right">Remover</button>
       </div>
     </div>
     <div class="footer-container">
@@ -31,23 +45,31 @@ export default {
   data: () => ({
     newActivity: "",
     history: "",
+    currentAct: "",
     activities: [],
+    modalStyle: [{ display: "none" }],
+    canRemoveItem: false,
   }),
   beforeMount() {
-   
-    let todolistItens = localStorage.getItem("todolist");
-
-    if (todolistItens != null) {
-      this.activities = JSON.parse(todolistItens);
-    }
-
-    //alert(screen.width)
+    this.loadActivities();
   },
   mounted() {
     this.$refs.activity.focus();
     this.history = `Nehuma atividade foi concluída hoje ${new Date().toLocaleString()}`;
   },
+  computed: {
+    computedModalStyle() {
+      return this.modalStyle;
+    },
+  },
   methods: {
+    loadActivities() {
+      let todolistItens = localStorage.getItem("todolist");
+
+      if (todolistItens != null) {
+        this.activities = JSON.parse(todolistItens);
+      }
+    },
     onEnter() {
       if (this.newActivity != "") {
         let act = {
@@ -65,11 +87,26 @@ export default {
         this.newActivity = "";
       }
     },
-    remove(act) {
+    openDialog(act) {
+      this.modalStyle = [{ display: "block" }];
+      this.currentAct = act;
+    },
+    canRemove() {
       this.$refs.activity.focus();
-      this.activities = this.activities.filter((item) => item.name != act);
+      this.activities = this.activities.filter(
+        (item) => item.name != this.currentAct
+      );
       localStorage.setItem("todolist", JSON.stringify(this.activities));
-      this.history = `Atividade: "${act}" REMOVIDA às ${new Date().toLocaleTimeString()}`;
+      this.history = `Atividade: "${
+        this.currentAct
+      }" REMOVIDA às ${new Date().toLocaleTimeString()}`;
+      this.currentAct = "";
+      this.modalStyle = [{ display: "none" }];
+    },
+    closeModal() {
+      this.modalStyle = [{ display: "none" }];
+      this.currentAct = "";
+      location.reload()
     },
   },
 };
@@ -98,7 +135,7 @@ export default {
 
 .itens-container {
   height: 100%;
-  max-height: 100%; 
+  max-height: 100%;
   /* background-color: aqua; */
   overflow-y: auto;
 }
@@ -139,6 +176,46 @@ export default {
   user-select: none;
   color: wheat;
   -webkit-app-region: no-drag;
+}
+
+/* The Modal (background) */
+.modal_item {
+  display: none; /* Hidden by default */
+  /* position: fixed; Stay in place */
+  z-index: 1; /* Sit on top */
+  /*padding-top: 100px;  Location of the box */
+  left: 0;
+  bottom: 0px;
+  margin: auto;
+  width: 80%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  -webkit-app-region: no-drag;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 0px solid #888;
+  width: 100%;
+  -webkit-app-region: no-drag;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 /* Radio style */
